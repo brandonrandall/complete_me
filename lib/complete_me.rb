@@ -7,6 +7,8 @@ class CompleteMe
   def initialize
     @root = Node.new
     @count = 0
+    @ending = []
+    @result = []
   end
 
   def insert(word)
@@ -18,18 +20,18 @@ class CompleteMe
     starting_node = traverse(input.chars)
 
     a = grab_suggestions(starting_node, input)
-# binding.pry
   end
 
   private
 
-  def grab_suggestions(starting_node, prefix, second_part = [])
-    second_part << starting_node.letter
+  def grab_suggestions(starting_node, prefix)
     starting_node.letters.each do |letter, node|
-      second_part << letter
-      grab_suggestions(node, prefix, second_part)
+      @ending << letter
+      grab_suggestions(node, prefix)
     end
-    second_part
+    @result << @ending.join
+    @ending = []
+    binding.pry
   end
 
   def populate(array_of_letters, current_node = @root, index = 0)

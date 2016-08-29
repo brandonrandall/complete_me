@@ -22,6 +22,8 @@ class CompleteMeTest < Minitest::Test
     assert_equal 1, completion.count
   end
 
+  ['a']
+
   def test_tree_can_make_suggestions
     # skip
     completion = CompleteMe.new

@@ -1,7 +1,10 @@
+require 'simplecov'
+SimpleCov.start
 require 'minitest/autorun'
 require 'minitest/pride'
 require 'pry'
 require './lib/complete_me'
+
 
 class CompleteMeTest < Minitest::Test
 
@@ -28,6 +31,7 @@ class CompleteMeTest < Minitest::Test
   end
 
   def test_it_populates_dictionary
+    skip
     completion = CompleteMe.new
     dictionary = File.read("/usr/share/dict/words")
     completion.populate(dictionary)
@@ -36,31 +40,48 @@ class CompleteMeTest < Minitest::Test
   end
 
   def test_tree_can_make_suggestions_after_being_populated
-    # skip
+    skip
     completion = CompleteMe.new
     dictionary = File.read("/usr/share/dict/words")
     completion.populate(dictionary)
     completion.insert("pizza")
 
-    assert_equal ["pizza", "pizzeria", "pizzicato", "pizzle"], completion.suggest("pizz")
+    assert_equal ["pizza", "pizzeria", "pizzicato", "pizzle"], completion.input("pizz")
   end
 
-  def test_tree_can_make_suggestions
+  def test_tree_can_take_input_prefix
     # skip
     completion = CompleteMe.new
     completion.insert("pizza")
     completion.insert("pizzeria")
-    assert_equal ["pizza", "pizzeria"], completion.suggest("pizz")
+    assert_equal ["pizza", "pizzeria"], completion.input("pizz")
   end
 
-  # def test_tree_can_count_the_frequency_that_the_same_word_is_entered
-  #   completion = CompleteMe.new
-  #   completion.select("piz", "pizzeria")
-  #   assert_equal 1, completion.suggest("pizz")
-  #   # completion.select("piz")
-  #   # assert_equal 2, completion.
-  #   # completion.select("piz")
-  #   # assert_equal 3, completion.
+  def test_it_makes_selectiions
+    # skip
+    completion = CompleteMe.new
+    completion.insert("pizza")
+    completion.insert("pizzeria")
+    completion.select("pizz", "pizza")
+    completion.select("pizz", "pizza")
+    completion.select("pizz", "pizzeria")
+    # binding.pry
+
+    assert_equal ({"pizz"=>{"pizza"=>2, "pizzeria"=>1}}), completion.default_weighted_value
+
+  end
+
+  def test_it_tree_makes_weighted_suggestions
+    completion = CompleteMe.new
+    completion.insert("pizza")
+    completion.insert("pizzeria")
+    completion.select("pizz", "pizza")
+    completion.select("pizz", "pizzeria")
+    completion.select("pizz", "pizzeria")
+    result = completion.suggest( "pizz" )
+    assert_equal ["pizzeria","pizza"], result
+    # assert_equal {"pizza"=>2, "pizzeria"=>1}, result
+  end
   #
   # end
 end

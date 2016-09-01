@@ -1,12 +1,12 @@
 require_relative 'node'
-# require 'pry'
+require 'pry'
 class CompleteMe
 
-  attr_accessor :root, :count, :frequency_of_selection, :default_weighted_value
+  attr_accessor :root, :count, :weighted_value
 
   def initialize
     @root = Node.new
-    @default_weighted_value = {} # Hash.new { Hash.new(0) }
+    @weighted_value = {}
     @count = 0
     @ending = []
     @result = []
@@ -18,22 +18,21 @@ class CompleteMe
 
   def input(input)
     starting_node = traverse(input.chars)
-    # binding.pry
     results = grab_suggestions(starting_node, input)
-    # format_suggestions(results, input)
     @result
   end
 
   def suggest(prefix)
-    words = @default_weighted_value[prefix]
+    words = @weighted_value[prefix]
     words = words.sort_by do |key, value|
       value
     end
     ordered_words = words.reverse
-    sorted_words = ordered_words.map do |obj| 
+    sorted_words = ordered_words.map do |obj|
       obj[0]
     end
     final_product = sorted_words.flatten
+    # binding.pry
   end
 
   def format_suggestions(results, input)
@@ -53,19 +52,14 @@ class CompleteMe
       @ending << letter
       grab_suggestions(node, prefix)
     end
-    # @result << @ending.join
     @result << prefix + @ending.join unless @ending.empty?
     @ending = []
   end
-#
+
   def select(prefix, selection)
-    @default_weighted_value[prefix] ||= {}
-    @default_weighted_value[prefix][selection] ||= 0
-    @default_weighted_value[prefix][selection] += 1
-    # @default_weighted_value[prefix] = {selection => }
-# binding.pry
-    # @hash[prefix][selection] += 1
-    #
+    @weighted_value[prefix] ||= {}
+    @weighted_value[prefix][selection] ||= 0
+    @weighted_value[prefix][selection] += 1
   end
 
   def populate_dictionary(array_of_letters, current_node = @root, index = 0)
@@ -88,8 +82,6 @@ class CompleteMe
 
   def traverse(letter_array, current_node = @root, index = 0)
     current_letter = letter_array[index]
-    # binding.pry
-
     if letter_array.length == index
       current_node
     else

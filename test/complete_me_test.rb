@@ -5,7 +5,6 @@ require 'minitest/pride'
 require 'pry'
 require './lib/complete_me'
 
-
 class CompleteMeTest < Minitest::Test
 
   def test_it_returns_a_word_when_inserted
@@ -65,9 +64,8 @@ class CompleteMeTest < Minitest::Test
     completion.select("pizz", "pizza")
     completion.select("pizz", "pizza")
     completion.select("pizz", "pizzeria")
-    # binding.pry
 
-    assert_equal ({"pizz"=>{"pizza"=>2, "pizzeria"=>1}}), completion.default_weighted_value
+    assert_equal ({"pizz"=>{"pizza"=>2, "pizzeria"=>1}}), completion.weighted_value
 
   end
 
@@ -80,8 +78,5 @@ class CompleteMeTest < Minitest::Test
     completion.select("pizz", "pizzeria")
     result = completion.suggest( "pizz" )
     assert_equal ["pizzeria","pizza"], result
-    # assert_equal {"pizza"=>2, "pizzeria"=>1}, result
   end
-  #
-  # end
 end
